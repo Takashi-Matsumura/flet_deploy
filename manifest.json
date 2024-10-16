@@ -1,19 +1,18 @@
 {
     "name": "PicoW LED Controller",
     "short_name": "PicoW Controller",
-    "description": "Control your PicoW LED remotely",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#000000",
     "icons": [
       {
-        "src": "/public/icons/icon-192x192.png",
+        "src": "/icons/icon-192x192.png", 
         "type": "image/png",
         "sizes": "192x192"
       },
       {
-        "src": "/public/icons/icon-512x512.png",
+        "src": "/icons/icon-512x512.png",  
         "type": "image/png",
         "sizes": "512x512"
       }
