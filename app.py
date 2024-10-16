@@ -19,29 +19,26 @@ def main(page: ft.Page):
     def toggle_led(e):
         nonlocal led_state
         ip_address = ip_input.value
-        if ip_address:
-            # LEDの状態に応じてONかOFFのリクエストを送信
-            action = "on" if not led_state else "off"
-            url = f"http://{ip_address}/{action}"
-            try:
-                response = requests.get(url)
-                # LEDの状態を反転
-                led_state = not led_state
-                # ボタンのテキストを更新
-                toggle_button.text = update_button_text()
-                page.add(ft.Text(f"Sent {action.upper()} signal to {ip_address}: {response.text}"))
-            except Exception as e:
-                page.add(ft.Text(f"Error: {e}"))
-        page.update()
+        if not ip_address:
+            page.snack_bar = ft.SnackBar(ft.Text("Please enter the IP address"))
+            page.snack_bar.open = True
+            page.update()
+            return
 
-    # 切り替えボタンを作成し、初期のテキストを設定
+        try:
+            response = requests.get(f"http://{ip_address}/led", params={"state": int(not led_state)})
+            response.raise_for_status()
+            led_state = not led_state
+            toggle_button.text = update_button_text()
+            page.update()
+        except requests.RequestException as ex:
+            page.snack_bar = ft.SnackBar(ft.Text(f"Error: {ex}"))
+            page.snack_bar.open = True
+            page.update()
+
+    # ボタンを作成してページに追加
     toggle_button = ft.ElevatedButton(text=update_button_text(), on_click=toggle_led)
-    
-    # ボタンをページに追加
     page.add(toggle_button)
-    page.update()
 
-# Webブラウザで実行するための設定
-ft.app(target=main, view=ft.WEB_BROWSER)
-
-
+# ft.app の呼び出し
+ft.app(target=main)
